@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './monuments.dart';
 
 class HomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => HomeScreenState();
@@ -27,7 +28,7 @@ class HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.all(5.0),
           child: TabBarView(
             children: [
-              Center(child: Icon(Icons.list)),
+              MonumentsScreen(),
               Center(child: Icon(Icons.favorite)),
               Center(child: Icon(Icons.settings)),
             ],
@@ -35,7 +36,7 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         bottomNavigationBar: new Material(
           child: TabBar(
-          labelColor: Theme.of(context).indicatorColor,
+            labelColor: Theme.of(context).indicatorColor,
             tabs: <Widget>[
               Tab(
                 icon: Icon(
@@ -56,7 +57,6 @@ class HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-
       ),
     );
   }
