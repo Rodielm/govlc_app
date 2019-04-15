@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './monuments.dart';
+import './monument_map.dart';
 
 class HomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => HomeScreenState();
@@ -16,7 +17,7 @@ class HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: new Text(
-            "Go VlC",
+            "Go VLC",
             style: TextStyle(
               color: Colors.red,
             ),
@@ -29,7 +30,7 @@ class HomeScreenState extends State<HomeScreen> {
           child: TabBarView(
             children: [
               MonumentsScreen(),
-              Center(child: Icon(Icons.favorite)),
+              MonumentMapScreen(),
               Center(child: Icon(Icons.settings)),
             ],
           ),
@@ -47,8 +48,8 @@ class HomeScreenState extends State<HomeScreen> {
                 text: "Lista",
               ),
               Tab(
-                icon: Icon(Icons.favorite, size: _iconSize, color: Colors.red),
-                text: "Favoritos",
+                icon: Icon(Icons.map, size: _iconSize, color: Colors.red),
+                text: "Mapa",
               ),
               Tab(
                 icon: Icon(Icons.settings, size: _iconSize, color: Colors.red),

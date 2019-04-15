@@ -28,12 +28,9 @@ var R = 6378137;
 
 var ZONE_LETTERS = 'CDEFGHJKLMNPQRSTUVWXX';
 
-test() {
-  return 5;
-}
-
-toLatLon(double easting, double northing, int zoneNum, String zoneLetter,
-    northern, {strict: true}) {
+toLatLon(
+    double easting, double northing, int zoneNum, String zoneLetter, northern,
+    {strict: true}) {
   strict = strict != null ? strict : true;
 
   if (zoneLetter.isEmpty && northern == null) {
@@ -111,8 +108,8 @@ toLatLon(double easting, double northing, int zoneNum, String zoneLetter,
               (5 - 2 * c + 28 * pTan2 - 3 * c2 + 8 * E_P2 + 24 * pTan4)) /
       pCos;
 
-  print(toDegrees(latitude));
-  print(toDegrees(longitude) + zoneNumberToCentralLongitude(zoneNum));
+//  print(toDegrees(latitude));
+//  print(toDegrees(longitude) + zoneNumberToCentralLongitude(zoneNum));
 
   return {
     'latitude': toDegrees(latitude),
@@ -167,12 +164,14 @@ fromLatLon(latitude, longitude, forceZoneNum) {
           M2 * Math.sin(2 * latRad) +
           M3 * Math.sin(4 * latRad) -
           M4 * Math.sin(6 * latRad));
+
   var easting = K0 *
           n *
           (a +
               a3 / 6 * (1 - latTan2 + c) +
               a5 / 120 * (5 - 18 * latTan2 + latTan4 + 72 * c - 58 * E_P2)) +
       500000;
+
   var northing = K0 *
       (m +
           n *
