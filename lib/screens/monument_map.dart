@@ -14,7 +14,8 @@ class MonumentMapScreen extends StatefulWidget {
   _MonumentMapScreenState createState() => _MonumentMapScreenState();
 }
 
-class _MonumentMapScreenState extends State<MonumentMapScreen> {
+class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKeepAliveClientMixin {
+
   Completer<GoogleMapController> _controller = Completer();
   MapType _currentMapType = MapType.normal;
   final Set<Marker> _markers = {};
@@ -149,8 +150,6 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> {
 
 //    initPlatformState();
 
-
-
 //    locationSubscription = location.onLocationChanged().listen((result) {
 //      setState(() {
 //        currentLocation = result;
@@ -161,6 +160,11 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> {
 
 //    _getRetrieveMonuments();
   }
+
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
   void initPlatformState() async {
     LocationData my_location;
@@ -180,4 +184,5 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> {
       });
     }
   }
+
 }

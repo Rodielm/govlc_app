@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:govlc_app/screens/imageCapture.dart';
 import './monuments.dart';
 import './monument_map.dart';
 
 class HomeScreen extends StatefulWidget {
+
+
   State<StatefulWidget> createState() => HomeScreenState();
 }
 
@@ -31,7 +34,7 @@ class HomeScreenState extends State<HomeScreen> {
             children: [
               MonumentsScreen(),
               MonumentMapScreen(),
-              Center(child: Icon(Icons.settings)),
+              ImageCapture(),
             ],
           ),
         ),

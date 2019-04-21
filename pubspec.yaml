@@ -28,6 +28,11 @@ dependencies:
   geolocator:
   location:
   share:
+  csv:
+  path_provider:
+  image_picker:
+  localstorage:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -47,6 +52,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - assets/data/monuments.json
+  - assets/data/vias.csv
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

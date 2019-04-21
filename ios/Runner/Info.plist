@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -48,5 +49,12 @@
     <string>Your location is required for this app</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Your location is required for this app</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need this key to get photo from Gallery source</string>
+    <key>NSCameraUsageDescription</key>
+    <string>We need this key to get photo from Camera source</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need this key to get microphone work</string>
 </dict>
 </plist>

@@ -1,37 +1,49 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:govlc_app/model/via.dart';
 import '../model/monument.dart';
 import './monument_detail.dart' as detail;
+import '../helper/util.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:csv/csv.dart';
 
 class MonumentsScreen extends StatefulWidget {
   @override
   createState() => _MonumentsScreenState();
 }
 
-class _MonumentsScreenState extends State<MonumentsScreen> {
+class _MonumentsScreenState extends State<MonumentsScreen>
+    with AutomaticKeepAliveClientMixin {
+
+  List<Monument> _monumentsUtmCoordinates = <Monument>[];
+
   final _monuments = <Monument>[];
 
   List<Monument> monuments = <Monument>[];
+  final dataAddress = <Via>[];
 
-  final Set<Monument> _visited = new Set<Monument>();
+  Set<Monument> _visited = new Set<Monument>();
 
   TextEditingController editingController = TextEditingController();
 
   Future<void> _getRetrieveMonuments() async {
+    print("Recuperando info");
+
     final json =
         DefaultAssetBundle.of(context).loadString('assets/data/monuments.json');
 
     List<dynamic> data = JsonDecoder().convert(await json)['features'];
 
-//    print(testData[2]['properties']);
-//    Monument testData = Monument.fromJson(monumentsData[0]);
-//    print(testData.properties.nombre);
-//    monumentsData.forEach((data) => print(data));
-//    var monumentsIndex = 0;
-
     data.forEach((monument) {
-      _monuments.add(Monument.fromJson(monument));
+      _monumentsUtmCoordinates.add(Monument.fromJson(monument));
+    });
+
+    _monumentsUtmCoordinates.forEach((m) {
+      LatLng position = Util().utmToLatLon(m);
+      m.geometry.coordinates[0] = position.latitude;
+      m.geometry.coordinates[1] = position.longitude;
+
+      _monuments.add(m);
     });
 
     setState(() {
@@ -39,18 +51,37 @@ class _MonumentsScreenState extends State<MonumentsScreen> {
     });
   }
 
-  String capitalize(String s) =>
-      s[0].toUpperCase() + s.substring(1).toLowerCase();
+  Future<void> _getRetrieveStreetAddress() async {
+//    await rootBundle.loadString('assets/data/vias.csv');
+    final csvData =
+        DefaultAssetBundle.of(context).loadString('assets/data/vias.csv');
 
-  _addVisited(Monument m) {
-    _visited.add(m);
+    List<dynamic> data = CsvToListConverter(fieldDelimiter: ';', eol: '\n')
+        .convert(await csvData);
+    data.removeAt(0);
+
+    for (var item in data) {
+      dataAddress.add(new Via(
+          codtipovia: item[0],
+          codvia: item[1],
+          codviacatastro: item[2],
+          nomoficial: capitalize(item[3]),
+          traducnooficial: capitalize(item[4] == 'null' ? '' : item[4])));
+    }
   }
+
+  String capitalize(String s) =>
+      s.isEmpty ? '' : s[0].toUpperCase() + s.substring(1).toLowerCase();
 
   @override
   void initState() {
     super.initState();
     _getRetrieveMonuments();
+    _getRetrieveStreetAddress();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +118,7 @@ class _MonumentsScreenState extends State<MonumentsScreen> {
   }
 
   Widget _buildRowIconVisited(Monument m) {
+
     final bool alreadyVisited = _visited.contains(m);
     return GestureDetector(
       child: Icon(alreadyVisited ? Icons.favorite : Icons.favorite_border,
@@ -106,8 +138,11 @@ class _MonumentsScreenState extends State<MonumentsScreen> {
       itemCount: monuments.length,
       itemBuilder: (context, index) {
         return ListTile(
-          onTap: () => _navigateToDetail(monuments[index]),
+          onTap: () => _navigateToDetail(
+              monuments[index], getVia(monuments[index].properties.codvia)),
           title: Text(capitalize(monuments[index].properties.nombre)),
+          subtitle:
+              Text(getMonumentAddress(monuments[index].properties.codvia)),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,13 +159,29 @@ class _MonumentsScreenState extends State<MonumentsScreen> {
     );
   }
 
-  void _navigateToDetail(Monument m) {
+  void _navigateToDetail(Monument m, Via v) {
 //    Navigator.of(context).push(detail.MonumentDetailScreen(value))
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (context) =>
-              detail.MonumentDetailScreen(m.properties.nombre, m)),
+          builder: (context) => detail.MonumentDetailScreen(m, v)),
     );
+  }
+
+  String getMonumentAddress(String codvia) {
+//      var address = dataAddress.where((via) => via.codvia == int.parse(codvia)).toList();
+    var address = dataAddress.firstWhere(
+        (via) => via.codvia.toString() == codvia,
+        orElse: () => null);
+//    print('${address != null ? address.nomoficial : 'NO MATCHING'}');
+
+    return address != null
+        ? '${address.codtipovia},${address.nomoficial} , ${address.traducnooficial}'
+        : '';
+  }
+
+  Via getVia(String codvia) {
+    return dataAddress.firstWhere((via) => via.codvia.toString() == codvia,
+        orElse: () => null);
   }
 
   void filterSearchResults(String value) {
