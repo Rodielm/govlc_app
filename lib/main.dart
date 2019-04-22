@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:govlc_app/screens/home.dart';
+import 'package:govlc_app/screens/monuments.dart';
+import 'package:govlc_app/screens/cameraExample.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,11 +12,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: MonumentsScreen(),
     );
   }
 }
 
+
+// Example
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 

@@ -1,21 +1,19 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:flutter/services.dart';
-
 import '../model/monument.dart';
 import 'dart:convert';
 import '../helper/util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MonumentMapScreen extends StatefulWidget {
   @override
   _MonumentMapScreenState createState() => _MonumentMapScreenState();
 }
 
-class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKeepAliveClientMixin {
-
+class _MonumentMapScreenState extends State<MonumentMapScreen> {
   Completer<GoogleMapController> _controller = Completer();
   MapType _currentMapType = MapType.normal;
   final Set<Marker> _markers = {};
@@ -73,8 +71,9 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKee
     _controller.complete(controller);
   }
 
-  getUserLocation(){
-    print('CURRENT LOCATION: Lat/lng ${currentLocation.latitude}/${currentLocation.longitude}');
+  getUserLocation() {
+    print(
+        'CURRENT LOCATION: Lat/lng ${currentLocation.latitude}/${currentLocation.longitude}');
   }
 
   Widget _buildMap() {
@@ -102,10 +101,21 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKee
             child: Column(
               children: <Widget>[
                 FloatingActionButton(
+                  onPressed: _read,
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.print, size: 36.0),
+                  heroTag: 'btn3',
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
+                FloatingActionButton(
                   onPressed: _onMapTypeButtonPressed,
                   materialTapTargetSize: MaterialTapTargetSize.padded,
                   backgroundColor: Colors.red,
                   child: Icon(Icons.map, size: 36.0),
+                  heroTag: 'btn1',
                 ),
                 SizedBox(
                   height: 16.0,
@@ -115,6 +125,7 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKee
                   materialTapTargetSize: MaterialTapTargetSize.padded,
                   backgroundColor: Colors.red,
                   child: Icon(Icons.add_location, size: 36.0),
+                  heroTag: 'btn2',
                 ),
                 SizedBox(
                   height: 16.0,
@@ -135,13 +146,14 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKee
     });
   }
 
-  void _onAddMarkerButtonPressed() {
-
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _buildStackMap();
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Mapa'),
+          backgroundColor: Colors.redAccent,
+        ),
+        body: _buildStackMap());
   }
 
   @override
@@ -153,24 +165,37 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKee
 //    locationSubscription = location.onLocationChanged().listen((result) {
 //      setState(() {
 //        currentLocation = result;
-//        print(currentLocation.latitude);
-//        print(currentLocation.longitude);
+////        print(currentLocation.latitude);
+////        print(currentLocation.longitude);
 //      });
 //    });
-
-//    _getRetrieveMonuments();
   }
 
+  _read() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'test';
+    final value = prefs.getInt(key) ?? 0;
+    print('read: $value');
+  }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  _save() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'test';
+    final value = 20;
+    prefs.setInt(key, value);
+    print('saved $value');
+  }
+
 
   void initPlatformState() async {
     LocationData my_location;
     try {
-      my_location = await location.getLocation();
-      error = "";
+      if (await location.hasPermission()) {
+        my_location = await location.getLocation();
+        error = "";
+      } else {
+        await location.requestPermission();
+      }
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         error = 'Permission denied';
@@ -184,5 +209,4 @@ class _MonumentMapScreenState extends State<MonumentMapScreen> with AutomaticKee
       });
     }
   }
-
 }

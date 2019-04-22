@@ -14,7 +14,7 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -25,13 +25,15 @@ dependencies:
   cupertino_icons: ^0.1.2
   url_launcher: ^5.0.2
   google_maps_flutter:
-  geolocator:
   location:
   share:
   csv:
   path_provider:
   image_picker:
-  localstorage:
+  latlong:
+  shared_preferences:
+  camera:
+  share_extend:
 
 dev_dependencies:
   flutter_test:
@@ -52,7 +54,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
   - assets/data/monuments.json
-  - assets/data/vias.csv
+  - assets/data/vias2.csv
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
